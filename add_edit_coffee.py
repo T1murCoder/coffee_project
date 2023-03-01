@@ -1,13 +1,13 @@
 import sys
 import sqlite3
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem
-from PyQt5 import uic
+from addEditCoffeeForm import Ui_MainWindow
 
 
-class AddEditForm(QMainWindow):
+class AddEditForm(QMainWindow, Ui_MainWindow):
     def __init__(self, id=None, other=None):
         super().__init__()
-        uic.loadUi("addEditCoffeeForm.ui", self)
+        self.setupUi(self)
         self.connection = sqlite3.connect("coffee.sqlite")
         self.id = id
         self.other = other
