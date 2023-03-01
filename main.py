@@ -2,6 +2,7 @@ import sys
 import sqlite3
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableWidgetItem
 from PyQt5 import uic
+from add_edit_coffee import AddEditForm
 
 
 class CoffeApp(QMainWindow):
@@ -9,10 +10,13 @@ class CoffeApp(QMainWindow):
         super().__init__()
         uic.loadUi("main.ui", self)
         self.connection = sqlite3.connect("coffee.sqlite")
+        self.edit_add_form = None
         self.InitUi()
 
     def InitUi(self):
         self.set_table()
+        self.btn_edit.clicked.connect(self.edit)
+        self.btn_add.clicked.connect(self.add)
 
     def set_table(self):
         self.tableWidget.setColumnCount(7)
@@ -28,8 +32,22 @@ class CoffeApp(QMainWindow):
                 self.tableWidget.setItem(
                     i, j, QTableWidgetItem(str(elem)))
 
+    def edit(self):
+        row_id = list(set([i.row() for i in self.tableWidget.selectedItems()]))
+        if row_id:
+            coffee_id = self.tableWidget.item(row_id[0], 0).text()
+            self.edit_add_form = AddEditForm(coffee_id, other=self)
+            self.edit_add_form.show()
 
+    def update_table(self):
+        self.set_table()
 
+    def add(self):
+        self.edit_add_form = AddEditForm(other=self)
+        self.edit_add_form.show()
+
+    def closeEvent(self, event):
+        self.connection.close()
 
 
 if __name__ == '__main__':
